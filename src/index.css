@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+@theme {
+  --color-warmth-50: #fdf9f6;
+  --color-warmth-100: #faf2ea;
+  --color-warmth-200: #f3e4d4;
+  --color-warmth-300: #e8cfb5;
+  --color-warmth-400: #d9b590;
+  --color-warmth-500: #c99a6e;
+  --color-warmth-600: #b4804f;
+  --color-warmth-700: #956943;
+  --color-warmth-800: #78563a;
+  --color-warmth-900: #624831;
+  
+  --color-sage-50: #f6f8f6;
+  --color-sage-100: #e8ede8;
+  --color-sage-200: #d4ddd4;
+  --color-sage-300: #b3c4b3;
+  --color-sage-400: #8fa98f;
+  --color-sage-500: #6d8c6d;
+  --color-sage-600: #557055;
+  --color-sage-700: #455a45;
+  --color-sage-800: #394a39;
+  --color-sage-900: #2f3d2f;
+  
+  --color-earth-50: #f9f7f4;
+  --color-earth-100: #f0ebe3;
+  --color-earth-200: #e3d9c8;
+  --color-earth-300: #d0bfa6;
+  --color-earth-400: #bca082;
+  --color-earth-500: #a88567;
+  --color-earth-600: #8b6a4f;
+  --color-earth-700: #725543;
+  --color-earth-800: #5e4739;
+  --color-earth-900: #4d3b2f;
+  
+  --font-display: 'Crimson Pro', serif;
+  --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-warmth-50);
+  color: var(--color-earth-900);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease-out;
+}
+
+.slide-up {
+  animation: slideUp 0.8s ease-out;
+}
+
+.stagger-1 {
+  animation-delay: 0.1s;
+}
+
+.stagger-2 {
+  animation-delay: 0.2s;
+}
+
+.stagger-3 {
+  animation-delay: 0.3s;
+}
+
+.stagger-4 {
+  animation-delay: 0.4s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gradient-warmth {
+  background: linear-gradient(135deg, var(--color-warmth-100) 0%, var(--color-sage-50) 100%);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-sage-700) 0%, var(--color-earth-700) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.smooth-scroll {
+  scroll-behavior: smooth;
+}
