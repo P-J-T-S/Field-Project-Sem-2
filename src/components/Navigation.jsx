@@ -9,7 +9,7 @@ const Navigation = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm shadow-sm z-50">
+    <nav className="fixed top-0 left-0 right-0 glass-morphism shadow-sm z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
@@ -18,14 +18,14 @@ const Navigation = () => {
             className="flex items-center cursor-pointer group"
           >
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-sage-600 to-earth-600 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 rounded-full bg-deep-teal flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-earth-900 leading-tight">DMCT Hospital</h1>
-                <p className="text-xs text-sage-700">& Old Age Home</p>
+                <h1 className="text-xl font-bold text-charcoal leading-tight">DMCT Hospital</h1>
+                <p className="text-xs text-primary-teal font-medium">Dr. Mitra Charitable Trust</p>
               </div>
             </div>
           </div>
@@ -36,30 +36,30 @@ const Navigation = () => {
               <button
                 key={item.id}
                 onClick={() => navigateTo(item.id)}
-                className={`text-sm font-medium transition-colors relative pb-1 ${
+                className={`text-base font-semibold transition-colors relative pb-1 ${
                   currentPage === item.id
-                    ? 'text-sage-700'
-                    : 'text-earth-700 hover:text-sage-700'
+                    ? 'text-deep-teal'
+                    : 'text-charcoal/70 hover:text-deep-teal'
                 }`}
               >
                 {item.label}
                 {currentPage === item.id && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-sage-600 rounded-full" />
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-teal rounded-full" />
                 )}
               </button>
             ))}
             <a
               href="tel:7977211807"
-              className="px-6 py-2.5 bg-gradient-to-r from-sage-600 to-earth-600 text-white rounded-full font-medium text-sm hover:shadow-lg transition-all hover:scale-105"
+              className="px-6 py-2.5 bg-deep-teal text-white rounded-full font-bold text-base hover:bg-primary-teal transition-all shadow-md hover:shadow-lg"
             >
-              Contact Us
+              Call Now
             </a>
           </div>
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg text-earth-700 hover:bg-warmth-100 transition-colors"
+            className="md:hidden p-2 rounded-lg text-charcoal hover:bg-warmth-100 transition-colors"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {mobileMenuOpen ? (
@@ -74,16 +74,16 @@ const Navigation = () => {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-warmth-200 bg-white/98 backdrop-blur-md">
-          <div className="px-4 py-4 space-y-3">
+        <div className="md:hidden border-t border-muted-sage/20 bg-white/98 backdrop-blur-md">
+          <div className="px-4 py-6 space-y-4">
             {menuItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => navigateTo(item.id)}
-                className={`block w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                className={`block w-full text-left px-4 py-3 rounded-xl text-lg font-semibold transition-colors ${
                   currentPage === item.id
-                    ? 'bg-sage-50 text-sage-700'
-                    : 'text-earth-700 hover:bg-warmth-100'
+                    ? 'bg-warmth-100 text-deep-teal'
+                    : 'text-charcoal hover:bg-warmth-50'
                 }`}
               >
                 {item.label}
@@ -91,9 +91,9 @@ const Navigation = () => {
             ))}
             <a
               href="tel:7977211807"
-              className="block w-full text-center px-4 py-3 bg-gradient-to-r from-sage-600 to-earth-600 text-white rounded-lg font-medium text-sm"
+              className="block w-full text-center px-4 py-4 bg-deep-teal text-white rounded-xl font-bold text-lg"
             >
-              Contact Us
+              Call Now
             </a>
           </div>
         </div>
