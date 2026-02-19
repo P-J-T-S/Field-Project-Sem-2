@@ -5,100 +5,100 @@ const Navigation = () => {
 
   const menuItems = [
     { id: 'home', label: 'Home' },
-    { id: 'services', label: 'Our Services' },
+    { id: 'services', label: 'Clinical Services' },
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 glass-morphism shadow-sm z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          {/* Logo */}
-          <div 
-            onClick={() => navigateTo('home')}
-            className="flex items-center cursor-pointer group"
-          >
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-full bg-deep-teal flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all">
-                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                </svg>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-charcoal leading-tight">DMCT Hospital</h1>
-                <p className="text-xs text-primary-teal font-medium">Dr. Mitra Charitable Trust</p>
+    <div className="fixed top-0 left-0 right-0 z-[100]">
+      <nav className="bg-white/90 backdrop-blur-xl border-b border-sage/10 shadow-sm transition-all duration-300">
+        <div className="max-w-7xl mx-auto px-6 lg:px-24">
+          <div className="flex justify-between items-center h-20">
+            {/* Logo */}
+            <div
+              onClick={() => navigateTo('home')}
+              className="flex items-center cursor-pointer group"
+            >
+              <div className="flex items-center space-x-4">
+                <div className="w-10 h-10 rounded-[4px] bg-forest flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-500">
+                  <svg className="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h1 className="text-base font-bold text-forest tracking-tight leading-none uppercase">DMCT Kalyan</h1>
+                  <p className="text-[9px] text-medical-teal font-bold tracking-[0.2em] uppercase mt-1 italic">Dr. Mitra Charitable Trust</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
-            {menuItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => navigateTo(item.id)}
-                className={`text-base font-semibold transition-colors relative pb-1 ${
-                  currentPage === item.id
-                    ? 'text-deep-teal'
-                    : 'text-charcoal/70 hover:text-deep-teal'
-                }`}
+            {/* Desktop Menu */}
+            <div className="hidden md:flex items-center space-x-10">
+              {menuItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => navigateTo(item.id)}
+                  className={`text-xs font-bold tracking-[0.1em] uppercase transition-all relative py-2 ${currentPage === item.id
+                    ? 'text-medical-teal'
+                    : 'text-main/50 hover:text-medical-teal'
+                    }`}
+                >
+                  {item.label}
+                  {currentPage === item.id && (
+                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gold rounded-full" />
+                  )}
+                </button>
+              ))}
+              <a
+                href="tel:7977211807"
+                className="px-6 py-2.5 bg-medical-teal text-white rounded-[4px] font-bold text-xs tracking-widest uppercase hover:bg-forest transition-all"
               >
-                {item.label}
-                {currentPage === item.id && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-teal rounded-full" />
+                Patient Admissions
+              </a>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 text-forest"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {mobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 8h16M4 16h16" />
                 )}
-              </button>
-            ))}
-            <a
-              href="tel:7977211807"
-              className="px-6 py-2.5 bg-deep-teal text-white rounded-full font-bold text-base hover:bg-primary-teal transition-all shadow-md hover:shadow-lg"
-            >
-              Call Now
-            </a>
+              </svg>
+            </button>
           </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg text-charcoal hover:bg-warmth-100 transition-colors"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {mobileMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
         </div>
-      </div>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-muted-sage/20 bg-white/98 backdrop-blur-md">
-          <div className="px-4 py-6 space-y-4">
-            {menuItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => navigateTo(item.id)}
-                className={`block w-full text-left px-4 py-3 rounded-xl text-lg font-semibold transition-colors ${
-                  currentPage === item.id
-                    ? 'bg-warmth-100 text-deep-teal'
-                    : 'text-charcoal hover:bg-warmth-50'
-                }`}
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-white border-t border-sage/10 animate-fade-in shadow-2xl">
+            <div className="px-6 py-10 space-y-6">
+              {menuItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => { navigateTo(item.id); setMobileMenuOpen(false); }}
+                  className={`block w-full text-left text-xl font-medium tracking-tight transition-colors ${currentPage === item.id
+                    ? 'text-medical-teal'
+                    : 'text-main/50 hover:text-medical-teal'
+                    }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+              <a
+                href="tel:7977211807"
+                className="block w-full text-center py-4 bg-medical-teal text-white rounded-[4px] font-bold text-base tracking-widest uppercase"
               >
-                {item.label}
-              </button>
-            ))}
-            <a
-              href="tel:7977211807"
-              className="block w-full text-center px-4 py-4 bg-deep-teal text-white rounded-xl font-bold text-lg"
-            >
-              Call Now
-            </a>
+                Patient Admissions
+              </a>
+            </div>
           </div>
-        </div>
-      )}
-    </nav>
+        )}
+      </nav>
+    </div>
   );
 };
 
