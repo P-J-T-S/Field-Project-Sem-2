@@ -23,6 +23,7 @@
 
   --shadow-premium: 0 40px 100px -20px rgba(27, 48, 34, 0.08);
   --shadow-lift: 0 10px 30px rgba(0, 0, 0, 0.05);
+  --shadow-bento: 0 25px 50px -12px rgba(27, 48, 34, 0.08);
 }
 
 @layer base {
@@ -160,7 +161,7 @@
 }
 
 .hover-bento:hover {
-  @apply shadow-[0_25px_50px_-12px_rgba(27, 48, 34, 0.08)];
+  @apply shadow-bento;
   transform: translateY(-2px);
 }
 
