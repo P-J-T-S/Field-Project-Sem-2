@@ -17,7 +17,14 @@ export const AppProvider = ({ children }) => {
   const navigateTo = (page) => {
     setCurrentPage(page);
     setMobileMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Only scroll to top if we're not navigating to a section on the same page
+    // Note: section scrolling is handled by observers/effects in the page components
+    if (page !== 'about' && page !== 'contact' && page !== 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (page === 'home' && currentPage === 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const value = {

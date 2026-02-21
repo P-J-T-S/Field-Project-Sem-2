@@ -1,11 +1,8 @@
-import { useEffect, useRef, useState, useContext } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { AppContext } from '../context/AppContext';
 
 const HomePage = () => {
   const { navigateTo, currentPage } = useContext(AppContext);
-  const [donateModal, setDonateModal] = useState(false);
-  const [formData, setFormData] = useState({ name: '', number: '', email: '', amount: '' });
-  const [donationStep, setDonationStep] = useState(1);
   const [fabVisible, setFabVisible] = useState(false);
 
   useEffect(() => {
@@ -42,17 +39,6 @@ const HomePage = () => {
     };
   }, [currentPage]);
 
-  const handleDonateSubmit = (e) => {
-    e.preventDefault();
-    if (donationStep === 1) {
-      setDonationStep(2);
-    } else {
-      // Mock payment redirection
-      alert(`Redirecting to payment gateway for amount: ₹${formData.amount}`);
-      setDonateModal(false);
-      setDonationStep(1);
-    }
-  };
 
   const services = [
     {
@@ -97,7 +83,7 @@ const HomePage = () => {
 
               <div className="flex flex-col sm:flex-row gap-6">
                 <button
-                  onClick={() => setDonateModal(true)}
+                  onClick={() => navigateTo('donate')}
                   className="btn-donate text-center"
                 >
                   Support Our Mission
@@ -115,13 +101,13 @@ const HomePage = () => {
               <div className="relative aspect-[4/5] rounded-[2px] overflow-hidden shadow-premium border border-silver/30">
                 <img
                   src="https://images.unsplash.com/photo-1581056344415-0adb39ca6c3f?auto=format&fit=crop&q=80&w=1200"
-                  alt="Doctor caring for elderly"
+                  alt="Professional medical care for elderly"
                   className="w-full h-full object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-1000"
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-hospital-navy/5 mix-blend-multiply" />
                 <div className="absolute bottom-0 left-0 right-0 p-8 bg-white/90 backdrop-blur-md border-t border-silver/20">
-                  <p className="text-[10px] uppercase tracking-[0.4em] font-bold text-surgical-blue mb-2">Institutional Stat</p>
+                  <p className="clinical-label mb-2">Institutional Stat</p>
                   <p className="text-3xl font-header text-hospital-navy">15+ Years</p>
                   <p className="text-xs text-surgical-charcoal/60 uppercase tracking-widest">of Compassionate Service</p>
                 </div>
@@ -231,7 +217,7 @@ const HomePage = () => {
           <div className="p-8 bg-white border border-silver shadow-sm inline-block">
             <p className="text-sm font-bold tracking-widest uppercase mb-6 text-surgical-blue">Philanthropic Hub</p>
             <button
-              onClick={() => setDonateModal(true)}
+              onClick={() => navigateTo('donate')}
               className="btn-donate px-12 py-5 text-lg"
             >
               Donate Now
@@ -296,87 +282,12 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Donation Modal - Stripe/Razorpay Premium aesthetic */}
-      {donateModal && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center px-6">
-          <div className="absolute inset-0 bg-hospital-navy/80 backdrop-blur-md" onClick={() => setDonateModal(false)} />
-          <div className="relative bg-white w-full max-w-md p-10 md:p-12 shadow-2xl rounded-[2px] animate-fadeIn">
-            <button
-              onClick={() => setDonateModal(false)}
-              className="absolute top-6 right-6 text-surgical-charcoal/30 hover:text-hospital-navy transition-colors"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-            </button>
-            <div className="mb-10 text-center">
-              <div className="w-12 h-12 bg-medical-white text-surgical-blue flex items-center justify-center mx-auto mb-6">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354l1.107 3.122h3.307l-2.675 1.93 1.022 3.122L12 10.697l-2.76 1.931 1.022-3.122-2.675-1.93h3.307L12 4.354z" /></svg>
-              </div>
-              <h3 className="text-2xl mb-2">Support Our NGO</h3>
-              <p className="text-sm text-surgical-charcoal/50 uppercase tracking-widest">Step {donationStep} of 2</p>
-            </div>
-
-            <form onSubmit={handleDonateSubmit} className="space-y-6">
-              {donationStep === 1 ? (
-                <>
-                  <div>
-                    <label className="clinical-label mb-2 block">Full Name</label>
-                    <input
-                      type="text" required
-                      className="w-full bg-medical-white border border-silver p-4 font-body text-sm outline-none focus:border-surgical-blue transition-colors"
-                      value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    />
-                  </div>
-                  <div>
-                    <label className="clinical-label mb-2 block">Contact Number</label>
-                    <input
-                      type="tel" required
-                      className="w-full bg-medical-white border border-silver p-4 font-body text-sm outline-none focus:border-surgical-blue transition-colors"
-                      value={formData.number} onChange={(e) => setFormData({ ...formData, number: e.target.value })}
-                    />
-                  </div>
-                  <div>
-                    <label className="clinical-label mb-2 block">Email Address</label>
-                    <input
-                      type="email" required
-                      className="w-full bg-medical-white border border-silver p-4 font-body text-sm outline-none focus:border-surgical-blue transition-colors"
-                      value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    />
-                  </div>
-                </>
-              ) : (
-                <div className="animate-fadeIn">
-                  <label className="clinical-label mb-4 block">Select Donation Amount (₹)</label>
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-                    {['500', '1000', '2000', '5000'].map(amt => (
-                      <button
-                        type="button" key={amt}
-                        onClick={() => setFormData({ ...formData, amount: amt })}
-                        className={`p-4 border font-bold ${formData.amount === amt ? 'bg-surgical-blue border-surgical-blue text-white' : 'bg-medical-white border-silver text-hospital-navy'} transition-all`}
-                      >
-                        ₹{amt}
-                      </button>
-                    ))}
-                  </div>
-                  <input
-                    type="number" placeholder="Custom Amount"
-                    className="w-full bg-medical-white border border-silver p-4 font-body text-sm outline-none focus:border-surgical-blue transition-colors"
-                    value={formData.amount} onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                  />
-                </div>
-              )}
-
-              <button type="submit" className="w-full btn-primary py-5 text-base shadow-xl">
-                {donationStep === 1 ? 'Continue to Payment' : 'Complete Donation'}
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* Emergency FAB */}
       <a
         href="tel:7400439760"
         className={`fixed bottom-8 right-8 z-[150] bg-surgical-blue text-white p-5 rounded-full shadow-2xl transition-all duration-500 hover:bg-hospital-navy active:scale-90 flex items-center space-x-3 group ${fabVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`}
+        aria-label="Call emergency support"
       >
         <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 font-bold uppercase tracking-widest text-[10px] whitespace-nowrap">Emergency Support</span>
         <svg className="w-8 h-8 animate-heartbeat" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>

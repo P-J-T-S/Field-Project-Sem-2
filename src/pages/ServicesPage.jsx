@@ -75,7 +75,7 @@ const ServicesPage = () => {
         "Support for sick and lonely seniors",
         "Shelter for abandoned and homeless elderly"
       ],
-      img: "https://images.unsplash.com/photo-1576091160550-217359f4ecf8?auto=format&fit=crop&q=80&w=1200"
+      img: "https://images.unsplash.com/photo-1576091160550-217359f4ecf8?auto=format&fit=crop&q=80&w=800"
     }
   ];
 
