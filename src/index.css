@@ -1,29 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  /* Phase 5: Last-Mile Institutional Palette */
-  --color-forest: #1B3022;
-  --color-medical-teal: #2D6A4F;
-  --color-sage: #A3B18A;
-  --color-gold: #C5A059;
-  --color-parchment: #FDFCF8;
-  --color-main: #2D3436;
-
-  /* Color Therapy Refinements */
-  --color-soft-sage: #F4F7F1;
-  --color-soft-earth: #F9F6F1;
+  /* Premium Clinical Palette */
+  --color-hospital-navy: #0F172A;
+  --color-surgical-blue: #0984E3;
+  --color-medical-white: #F8F9FA;
+  --color-surgical-charcoal: #2D3436;
+  --color-sage: #2D5A47;
+  --color-silver: #E2E8F0;
 
   /* Refined Typography */
-  --font-display: 'Playfair Display', serif;
-  --font-prestige: 'Cormorant Garamond', serif;
+  --font-header: 'Lora', serif;
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
 
   --spacing-section-v: 120px;
+  --spacing-golden: calc(100vw / 1.618);
 
-  --shadow-premium: 0 40px 100px -20px rgba(27, 48, 34, 0.08);
+  --shadow-premium: 0 40px 100px -20px rgba(15, 23, 42, 0.08);
   --shadow-lift: 0 10px 30px rgba(0, 0, 0, 0.05);
-  --shadow-bento: 0 25px 50px -12px rgba(27, 48, 34, 0.08);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
 @layer base {
@@ -32,80 +28,137 @@
   }
 
   body {
-    @apply bg-parchment text-main font-body antialiased selection:bg-sage/20 selection:text-forest;
-    font-size: 18px;
-    line-height: 1.8;
+    @apply bg-medical-white text-surgical-charcoal font-body antialiased;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* Hide scrollbar globally but maintain functionality */
+  * {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  *::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari and Opera */
   }
 
   h1,
   h2,
   h3,
   h4 {
-    @apply font-display tracking-tight font-medium;
+    @apply font-header tracking-tight font-medium text-hospital-navy;
   }
 
-  .font-prestige {
-    font-family: var(--font-prestige);
+  h1 {
+    @apply text-4xl md:text-6xl;
   }
 
-  /* Sophisticated background transitions */
-  .bg-soft-shift {
-    background: linear-gradient(180deg, #FDFCF8 0%, #F5F2EB 100%);
-  }
-
-  .bg-paper-texture {
-    background-color: #FDFCF8;
-    background-image: url("https://www.transparenttextures.com/patterns/p6.png");
+  h2 {
+    @apply text-3xl md:text-5xl;
   }
 }
 
 @layer components {
 
-  /* Clinical Sharp Buttons */
+  /* Hospital Grade Buttons */
   .btn-primary {
-    @apply bg-medical-teal text-white px-10 py-5 rounded-[4px] font-bold text-xs tracking-widest uppercase transition-all duration-300 hover:bg-forest hover:shadow-xl;
+    @apply bg-surgical-blue text-white px-8 py-4 rounded-[2px] font-semibold text-sm tracking-widest uppercase transition-all duration-300 hover:bg-hospital-navy hover:shadow-lg;
   }
 
   .btn-secondary {
-    @apply border border-forest text-forest px-10 py-5 rounded-[4px] font-bold text-xs tracking-widest uppercase transition-all duration-300 hover:bg-forest hover:text-white;
+    @apply border-2 border-hospital-navy text-hospital-navy px-8 py-4 rounded-[2px] font-semibold text-sm tracking-widest uppercase transition-all duration-300 hover:bg-hospital-navy hover:text-white;
   }
 
-  .btn-gold {
-    @apply inline-flex items-center justify-center px-10 py-4 bg-gold text-forest rounded-[4px] font-bold transition-all hover:bg-white border border-gold hover:shadow-lift active:scale-95;
+  .btn-donate {
+    @apply inline-flex items-center justify-center px-8 py-4 bg-hospital-navy text-white rounded-[2px] font-bold tracking-widest uppercase transition-all hover:bg-surgical-blue hover:shadow-lift active:scale-95;
   }
 
-  /* Golden Ratio - Uniform internal padding for premium feel */
-  .card-premium {
-    @apply p-12 md:p-16 lg:p-20 bg-white rounded-[4px] border border-sage/5 transition-all duration-500 shadow-sm;
+  /* Golden Ratio Layouts */
+  .layout-grid {
+    @apply grid lg:grid-cols-12 gap-8 md:gap-12;
+  }
+
+  .content-main {
+    @apply lg:col-span-8;
+  }
+
+  .content-side {
+    @apply lg:col-span-4;
+  }
+
+  /* Premium Clinical Components */
+  .card-hospital {
+    @apply p-8 md:p-12 bg-white rounded-[2px] border border-silver/40 transition-all duration-500 shadow-card hover:shadow-premium;
   }
 
   .section-padding {
-    @apply py-24 sm:py-32 lg:py-40 px-6 lg:px-24;
+    @apply py-12 md:py-20 lg:py-24 px-6 lg:px-24;
   }
 
-  .image-warm-overlay {
-    @apply relative overflow-hidden;
+  .hero-padding {
+    @apply pt-8 pb-12 md:pt-12 md:pb-20 lg:pt-16 lg:pb-24 px-6 lg:px-24;
   }
 
-  .image-warm-overlay::after {
+  .clinical-label {
+    @apply text-[11px] uppercase tracking-[0.3em] font-bold text-surgical-blue;
+  }
+
+  /* Advanced Animations */
+  .animate-clinical-scan {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .animate-clinical-scan::after {
     content: '';
-    @apply absolute inset-0 bg-parchment/10 mix-blend-multiply pointer-events-none;
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(9, 132, 227, 0.1),
+        transparent);
+    animation: scan 3s infinite linear;
   }
 
-  .glass-trust-bar {
-    @apply bg-white/10 backdrop-blur-[10px] border border-white/20;
+  @keyframes scan {
+    0% {
+      left: -100%;
+    }
+
+    100% {
+      left: 200%;
+    }
   }
 
-  .micro-label {
-    @apply text-[10px] uppercase tracking-[0.4em] font-bold text-main/40;
+  .animate-heartbeat {
+    animation: heartbeat 2s infinite ease-in-out;
   }
 
-  /* Premium Page Fade-In */
-  .animate-page-fade {
-    animation: pageFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  @keyframes heartbeat {
+
+    0%,
+    100% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.05);
+    }
   }
 
-  @keyframes pageFadeIn {
+  .page-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
     from {
       opacity: 0;
       transform: translateY(10px);
@@ -117,64 +170,29 @@
     }
   }
 
-  .mobile-sticky-emergency {
-    @apply fixed bottom-0 left-0 right-0 z-[60] p-4 sm:hidden;
+  /* Utility for Golden Ratio Spacing */
+  .mb-golden {
+    margin-bottom: 2rem;
   }
 
-  .impact-number {
-    @apply font-display text-5xl md:text-7xl text-medical-teal font-semibold;
-  }
-
-  .glass-morphism {
-    @apply bg-white/90 backdrop-blur-[10px] border border-medical-teal/5;
-  }
-
-  .emergency-strip {
-    @apply bg-forest text-white py-3 px-6 lg:px-24 flex justify-between items-center text-xs font-bold tracking-widest uppercase fixed top-0 left-0 right-0 z-[100];
+  .p-golden {
+    padding: 2rem;
   }
 }
 
-/* Animations & Transitions - Soft Fade + 80px Smooth Slide */
-.slide-up {
+/* Scroll Reveals */
+.reveal-on-scroll {
   opacity: 0;
-  transform: translateY(80px);
-  transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(20px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.slide-up.visible {
+.reveal-on-scroll.visible {
   opacity: 1;
   transform: translateY(0);
 }
 
-.reveal {
-  opacity: 0;
-  transition: opacity 1.5s ease-out;
-}
-
-.reveal.visible {
-  opacity: 1;
-}
-
-/* Artisan Touch - Tactile Interactions (Refined for Subtlety) */
-.hover-bento {
-  @apply transition-all duration-700 ease-out;
-}
-
-.hover-bento:hover {
-  @apply shadow-bento;
-  transform: translateY(-2px);
-}
-
-/* Artisan Touch - Typography Art */
-.quote-glyph {
-  @apply absolute font-display text-[24rem] leading-none text-white/[0.04] select-none pointer-events-none;
-}
-
-.clinical-list li {
-  line-height: 1.8;
-  @apply mb-4 last:mb-0;
-}
-
+/* Staggered Animation delays */
 .stagger-1 {
   transition-delay: 0.1s;
 }
@@ -189,38 +207,4 @@
 
 .stagger-4 {
   transition-delay: 0.4s;
-}
-
-.fade-in {
-  animation: fadeIn 1s ease-out forwards;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-.soft-shadow {
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
-}
-
-@keyframes bounce-subtle {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
-.animate-bounce-subtle {
-  animation: bounce-subtle 2s infinite ease-in-out;
 }

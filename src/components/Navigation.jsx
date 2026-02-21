@@ -5,67 +5,68 @@ const Navigation = () => {
 
   const menuItems = [
     { id: 'home', label: 'Home' },
-    { id: 'services', label: 'Clinical Services' },
+    { id: 'services', label: 'Our Services' },
+    { id: 'contact', label: 'Contact' },
   ];
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[100]">
-      <nav className="bg-white/90 backdrop-blur-xl border-b border-sage/10 shadow-sm transition-all duration-300">
+    <div className="fixed top-0 left-0 right-0 z-[100] page-fade-in">
+      <nav className="bg-white/95 backdrop-blur-md border-b border-silver shadow-sm transition-all duration-300">
         <div className="max-w-7xl mx-auto px-6 lg:px-24">
-          <div className="flex justify-between items-center h-20">
-            {/* Logo */}
+          <div className="flex justify-between items-center h-24">
+            {/* Logo - Clinical & Authoritative */}
             <div
               onClick={() => navigateTo('home')}
               className="flex items-center cursor-pointer group"
             >
-              <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 rounded-[4px] bg-forest flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-500">
-                  <svg className="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              <div className="flex items-center space-x-5">
+                <div className="w-12 h-12 rounded-[2px] bg-hospital-navy flex items-center justify-center shadow-lg group-hover:bg-surgical-blue transition-colors duration-500">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
                 </div>
                 <div>
-                  <h1 className="text-base font-bold text-forest tracking-tight leading-none uppercase">DMCT Kalyan</h1>
-                  <p className="text-[9px] text-medical-teal font-bold tracking-[0.2em] uppercase mt-1 italic">Dr. Mitra Charitable Trust</p>
+                  <h1 className="text-xl font-bold text-hospital-navy tracking-tight leading-none uppercase font-body">DMCT Hospital</h1>
+                  <p className="text-[10px] text-surgical-blue font-bold tracking-[0.3em] uppercase mt-1">Old Age Home • NGO</p>
                 </div>
               </div>
             </div>
 
-            {/* Desktop Menu */}
-            <div className="hidden md:flex items-center space-x-10">
+            {/* Desktop Menu - Institutional Minimalism */}
+            <div className="hidden md:flex items-center space-x-12">
               {menuItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => navigateTo(item.id)}
-                  className={`text-xs font-bold tracking-[0.1em] uppercase transition-all relative py-2 ${currentPage === item.id
-                    ? 'text-medical-teal'
-                    : 'text-main/50 hover:text-medical-teal'
+                  className={`text-[11px] font-bold tracking-[0.2em] uppercase transition-all relative py-2 ${currentPage === item.id
+                    ? 'text-surgical-blue'
+                    : 'text-surgical-charcoal/60 hover:text-hospital-navy'
                     }`}
                 >
                   {item.label}
                   {currentPage === item.id && (
-                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gold rounded-full" />
+                    <span className="absolute bottom-0 left-0 w-full h-[3px] bg-surgical-blue rounded-full" />
                   )}
                 </button>
               ))}
-              <a
-                href="tel:7977211807"
-                className="px-6 py-2.5 bg-medical-teal text-white rounded-[4px] font-bold text-xs tracking-widest uppercase hover:bg-forest transition-all"
+              <button
+                onClick={() => navigateTo('donate')}
+                className="btn-primary flex items-center space-x-2"
               >
-                Patient Admissions
-              </a>
+                <span>Donate Now</span>
+              </button>
             </div>
 
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-forest"
+              className="md:hidden p-2 text-hospital-navy"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 8h16M4 16h16" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 8h16M4 16h16" />
                 )}
               </svg>
             </button>
@@ -74,26 +75,26 @@ const Navigation = () => {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-white border-t border-sage/10 animate-fade-in shadow-2xl">
-            <div className="px-6 py-10 space-y-6">
+          <div className="md:hidden bg-white border-t border-silver animate-fade-in shadow-2xl">
+            <div className="px-6 py-12 space-y-8">
               {menuItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => { navigateTo(item.id); setMobileMenuOpen(false); }}
-                  className={`block w-full text-left text-xl font-medium tracking-tight transition-colors ${currentPage === item.id
-                    ? 'text-medical-teal'
-                    : 'text-main/50 hover:text-medical-teal'
+                  className={`block w-full text-left text-2xl font-header tracking-tight transition-colors ${currentPage === item.id
+                    ? 'text-surgical-blue'
+                    : 'text-surgical-charcoal/60 hover:text-hospital-navy'
                     }`}
                 >
                   {item.label}
                 </button>
               ))}
-              <a
-                href="tel:7977211807"
-                className="block w-full text-center py-4 bg-medical-teal text-white rounded-[4px] font-bold text-base tracking-widest uppercase"
+              <button
+                onClick={() => { navigateTo('donate'); setMobileMenuOpen(false); }}
+                className="block w-full text-center py-5 bg-surgical-blue text-white rounded-[2px] font-bold text-lg tracking-widest uppercase"
               >
-                Patient Admissions
-              </a>
+                Donate Now
+              </button>
             </div>
           </div>
         )}
