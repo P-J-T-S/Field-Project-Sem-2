@@ -208,3 +208,14 @@
 .stagger-4 {
   transition-delay: 0.4s;
 }
+
+@media (max-width: 768px) {
+  .sector-modal-backdrop {
+    align-items: flex-start !important;
+    padding: 96px 16px 32px 16px !important;
+  }
+
+  .sector-modal-content {
+    max-width: 100% !important;
+  }
+}

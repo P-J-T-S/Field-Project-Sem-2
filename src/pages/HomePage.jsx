@@ -1,9 +1,55 @@
 import { useEffect, useState, useContext } from 'react';
+import { createPortal } from 'react-dom';
 import { AppContext } from '../context/AppContext';
+import Img5 from '../images/img5.png';
 
 const HomePage = () => {
   const { navigateTo, currentPage } = useContext(AppContext);
   const [fabVisible, setFabVisible] = useState(false);
+  const [showSectorModal, setShowSectorModal] = useState(false);
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (showSectorModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [showSectorModal]);
+
+  const serviceSectors = [
+    {
+      key: 'old-age-home-services',
+      label: 'Old Age Home Services',
+      description: 'Residential care, street rescue, ambulance helpline, family tracing, and last rites for the unclaimed.',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+      )
+    },
+    {
+      key: 'hospital-services',
+      label: 'Hospital & Community Services',
+      description: 'Free clinic, subsidised treatment, care for abandoned persons, and free medicines for the needy.',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+        </svg>
+      )
+    },
+    {
+      key: 'free-clinic',
+      label: 'Free Clinic',
+      description: 'Free OPD consultations, free medicines, concession-based care, and health check-ups for the poor.',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      )
+    }
+  ];
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -89,10 +135,10 @@ const HomePage = () => {
                   Support Our Mission
                 </button>
                 <button
-                  onClick={() => navigateTo('services')}
+                  onClick={() => setShowSectorModal(true)}
                   className="btn-secondary"
                 >
-                  View Medical Facilities
+                  View Our Services
                 </button>
               </div>
             </div>
@@ -100,7 +146,7 @@ const HomePage = () => {
             <div className="content-side relative reveal-on-scroll stagger-2">
               <div className="relative aspect-[4/5] rounded-[2px] overflow-hidden shadow-premium border border-silver/30">
                 <img
-                  src="https://images.unsplash.com/photo-1581056344415-0adb39ca6c3f?auto=format&fit=crop&q=80&w=1200"
+                  src={Img5}
                   alt="Professional medical care for elderly"
                   className="w-full h-full object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-1000"
                   loading="lazy"
@@ -282,6 +328,68 @@ const HomePage = () => {
         </div>
       </section>
 
+
+      {/* Services Sector Modal — rendered via portal to escape parent stacking contexts */}
+      {showSectorModal && createPortal(
+        <div
+          style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 9999, backgroundColor: 'rgba(10,21,45,0.65)', backdropFilter: 'blur(4px)', overflowY: 'auto', display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '96px 16px 32px' }}
+          onClick={() => setShowSectorModal(false)}
+        >
+          <div
+            style={{ background: 'white', width: '100%', maxWidth: '560px', borderRadius: '2px', boxShadow: '0 25px 60px rgba(0,0,0,0.25)', overflow: 'hidden' }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="bg-hospital-navy px-10 py-8 flex items-start justify-between">
+              <div>
+                <p className="clinical-label !text-surgical-blue mb-2">Select a Sector</p>
+                <h3 className="text-white text-2xl font-header">Our Services</h3>
+              </div>
+              <button
+                onClick={() => setShowSectorModal(false)}
+                className="text-white/40 hover:text-white transition-colors mt-1"
+                aria-label="Close"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Sector Options */}
+            <div className="p-6 space-y-4">
+              {serviceSectors.map((sector) => (
+                <button
+                  key={sector.key}
+                  onClick={() => {
+                    setShowSectorModal(false);
+                    navigateTo(sector.key);
+                  }}
+                  className="w-full text-left flex items-start gap-6 p-6 border border-silver/40 hover:border-surgical-blue hover:bg-medical-white transition-all duration-200 group"
+                >
+                  <div className="w-12 h-12 bg-medical-white text-surgical-blue group-hover:bg-surgical-blue group-hover:text-white flex items-center justify-center flex-shrink-0 transition-colors duration-200">
+                    {sector.icon}
+                  </div>
+                  <div>
+                    <p className="font-header text-hospital-navy text-lg mb-1">{sector.label}</p>
+                    <p className="text-sm text-surgical-charcoal/60 leading-relaxed">{sector.description}</p>
+                  </div>
+                  <svg className="w-5 h-5 text-silver group-hover:text-surgical-blue ml-auto flex-shrink-0 mt-1 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              ))}
+            </div>
+
+            <div className="px-10 pb-8">
+              <p className="text-surgical-charcoal/40 text-xs uppercase tracking-widest">
+                More service sectors will be added over time.
+              </p>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
 
       {/* Emergency FAB */}
       <a
