@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 export const AppContext = createContext();
 
@@ -14,12 +14,22 @@ export const AppProvider = ({ children }) => {
   const [currentPage, setCurrentPage] = useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // ── Detect PhonePe callback redirects ─────────────────────────────────────
+  // PhonePe redirects to /payment-success?txnId=... or /payment-failure?...
+  // Since this is a SPA without a router, we detect the path on mount.
+  useEffect(() => {
+    const path = window.location.pathname;
+    if (path === '/payment-success') {
+      setCurrentPage('payment-success');
+    } else if (path === '/payment-failure') {
+      setCurrentPage('payment-failure');
+    }
+  }, []);
+
   const navigateTo = (page) => {
     setCurrentPage(page);
     setMobileMenuOpen(false);
 
-    // Only scroll to top if we're not navigating to a section on the same page
-    // Note: section scrolling is handled by observers/effects in the page components
     if (page !== 'about' && page !== 'contact' && page !== 'home') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (page === 'home' && currentPage === 'home') {
