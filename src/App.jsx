@@ -9,6 +9,8 @@ const DonationPage = lazy(() => import('./pages/DonationPage'));
 const Hospital_Services = lazy(() => import('./pages/HospitalServices.jsx'));
 const OldAgeHomeServices = lazy(() => import('./pages/OldAgeHomeServices.jsx'));
 const FreeClinic = lazy(() => import('./pages/FreeClinic.jsx'));
+const PaymentSuccess = lazy(() => import('./pages/PaymentSuccess.jsx'));
+const PaymentFailure = lazy(() => import('./pages/PaymentFailure.jsx'));
 
 const Loader = () => (
   <div className="min-h-[60vh] flex items-center justify-center">
@@ -30,6 +32,8 @@ const AppContent = () => {
           {currentPage === 'hospital-services' && <Hospital_Services />}
           {currentPage === 'old-age-home-services' && <OldAgeHomeServices />}
           {currentPage === 'free-clinic' && <FreeClinic />}
+          {currentPage === 'payment-success' && <PaymentSuccess />}
+          {currentPage === 'payment-failure' && <PaymentFailure />}
         </Suspense>
       </main>
       <Footer />

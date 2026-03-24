@@ -67,7 +67,7 @@ const Navigation = () => {
                 </div>
                 <div>
                   <h1 className="text-base font-bold text-hospital-navy tracking-tight leading-none uppercase font-body">
-                    Doctor Mitra's Charitable Trust
+                    Doctor Mitra Charitable Trust
                   </h1>
                   <p className="text-[10px] text-surgical-blue font-bold tracking-[0.3em] uppercase mt-1">
                     Old Age Home • NGO
