@@ -1,34 +1,45 @@
-/**
- * emailService.js  — Brevo API (firewall-safe HTTPS, no SMTP)
- * ─────────────────────────────────────────────────────────────────────────────
- * Free tier: 9,000 emails/month, 300/day
- *
- * Required .env:
- *   BREVO_API_KEY
- *   EMAIL_FROM_NAME      e.g. "DMCT Hospital & Old Age Home"
- *   EMAIL_FROM_ADDRESS   your verified sender Gmail
- *   ADMIN_EMAIL          e.g. drravindrajadhav2@gmail.com
- *
- * Install: npm install @getbrevo/brevo
- */
+import { BrevoClient } from '@getbrevo/brevo';
 
-import * as Brevo from "@getbrevo/brevo";
+const API_KEY = process.env.BREVO_API_KEY || '';
+const SENDER_EMAIL = process.env.EMAIL_FROM_ADDRESS || process.env.BREVO_SENDER_EMAIL || '';
+const SENDER_NAME = process.env.EMAIL_FROM_NAME || 'DMCT Hospital & Old Age Home';
 
-let _client = null;
-const getClient = () => {
-  if (_client) return _client;
-  const api = new Brevo.TransactionalEmailsApi();
-  api.authentications["apiKey"].apiKey = process.env.BREVO_API_KEY;
-  _client = api;
-  return _client;
+let brevoClient = null;
+
+const getBrevoClient = () => {
+  if (!API_KEY) {
+    console.warn('[Email] BREVO_API_KEY is missing. Transactional emails are disabled.');
+    return null;
+  }
+
+  if (!brevoClient) {
+    brevoClient = new BrevoClient({ apiKey: API_KEY });
+    console.log('[Email] Brevo transactional email client configured.');
+  }
+
+  return brevoClient;
+};
+
+const getErrorMessage = (error) => {
+  const brevoBody = error?.response?.body;
+
+  if (typeof brevoBody === 'string' && brevoBody) {
+    return brevoBody;
+  }
+
+  if (brevoBody?.message) {
+    return brevoBody.message;
+  }
+
+  return error?.message || 'Unknown email error';
 };
 
 const fmtCurrency = (n) =>
   "₹" + Number(n).toLocaleString("en-IN", { minimumFractionDigits: 0 });
 
 const sender = () => ({
-  name: process.env.EMAIL_FROM_NAME || "DMCT Hospital & Old Age Home",
-  email: process.env.EMAIL_FROM_ADDRESS || "your-verified@gmail.com",
+  name: SENDER_NAME,
+  email: SENDER_EMAIL || "your-verified@gmail.com",
 });
 
 const fmtReceiptNo = (n) => (n ? `RCP-${String(n).padStart(4, "0")}` : "—");
@@ -125,31 +136,49 @@ const buildDonorHtml = (donation) => /* html */ `
 // ── Public API ────────────────────────────────────────────────────────────────
 
 export const sendDonorConfirmationEmail = async (donation, pdfBuffer) => {
-  const client = getClient();
+  const client = getBrevoClient();
+  
+  if (!client) {
+    console.error('[Email] Email service is not configured');
+    return { success: false, error: 'Email service is not configured' };
+  }
+
+  if (!SENDER_EMAIL) {
+    console.warn('[Email] SENDER_EMAIL is missing. Transactional emails are disabled.');
+    return { success: false, error: 'Email sender is not configured' };
+  }
+
   const fileName = `DMCT_Receipt_${fmtReceiptNo(donation.receiptNo)}_${donation.txnId}.pdf`;
 
-  const email = new Brevo.SendSmtpEmail();
-  email.sender = sender();
-  email.to = [{ email: donation.email, name: donation.name }];
-  email.subject = `Donation Receipt ${fmtReceiptNo(donation.receiptNo)} – ${fmtCurrency(donation.amountRupees)} | DMCT Hospital`;
-  email.htmlContent = buildDonorHtml(donation);
-  email.textContent = [
-    `Dear ${donation.name},`,
-    `Thank you for donating ${fmtCurrency(donation.amountRupees)} to DMCT Hospital & Old Age Home.`,
-    `Receipt No: ${fmtReceiptNo(donation.receiptNo)}`,
-    `Transaction ID: ${donation.txnId}`,
-    `PhonePe Ref: ${donation.phonePeTxnId || "—"}`,
-    "Receipt PDF attached.",
-    donation.driveReceiptUrl ? `Drive link: ${donation.driveReceiptUrl}` : "",
-    "Queries: 7977 211 807 | 9833 155 731",
-  ].join("\n");
-  email.attachment = [
-    { name: fileName, content: pdfBuffer.toString("base64") },
-  ];
+  try {
+    const response = await client.transactionalEmails.sendTransacEmail({
+      sender: sender(),
+      to: [{ email: donation.email, name: donation.name }],
+      subject: `Donation Receipt ${fmtReceiptNo(donation.receiptNo)} – ${fmtCurrency(donation.amountRupees)} | DMCT Hospital`,
+      htmlContent: buildDonorHtml(donation),
+      textContent: [
+        `Dear ${donation.name},`,
+        `Thank you for donating ${fmtCurrency(donation.amountRupees)} to DMCT Hospital & Old Age Home.`,
+        `Receipt No: ${fmtReceiptNo(donation.receiptNo)}`,
+        `Transaction ID: ${donation.txnId}`,
+        `PhonePe Ref: ${donation.phonePeTxnId || "—"}`,
+        "Receipt PDF attached.",
+        donation.driveReceiptUrl ? `Drive link: ${donation.driveReceiptUrl}` : "",
+        "Queries: 7977 211 807 | 9833 155 731",
+      ].join("\n"),
+      attachment: [
+        { name: fileName, content: pdfBuffer.toString("base64") },
+      ],
+    });
 
-  const result = await client.sendTransacEmail(email);
-  console.log(`[EMAIL] Donor → ${donation.email} | msgId=${result.messageId}`);
-  return result;
+    const messageId = response?.data?.messageId || response?.messageId || null;
+    console.log(`[EMAIL] Donor → ${donation.email} | msgId=${messageId}`);
+    return { success: true, messageId };
+  } catch (error) {
+    const message = getErrorMessage(error);
+    console.error('[Email] Failed to send donor confirmation email:', message);
+    return { success: false, error: message };
+  }
 };
 
 export const sendAdminNotificationEmail = async (donation, sheetUrl) => {
@@ -159,32 +188,50 @@ export const sendAdminNotificationEmail = async (donation, sheetUrl) => {
     return null;
   }
 
-  const client = getClient();
-  const email = new Brevo.SendSmtpEmail();
-  email.sender = sender();
-  email.to = [{ email: adminEmail, name: "DMCT Admin" }];
-  email.subject = `[NEW DONATION] ${fmtCurrency(donation.amountRupees)} from ${donation.name} | Receipt ${fmtReceiptNo(donation.receiptNo)}`;
-  email.htmlContent = /* html */ `
-    <div style="font-family:Arial,sans-serif;font-size:13px;max-width:500px;">
-      <h3 style="color:#C85000;margin-bottom:16px;">New Donation Received</h3>
-      <table style="border-collapse:collapse;width:100%;">
-        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #eee;">Donor</td>        <td style="padding:7px 12px;font-weight:600;border-bottom:1px solid #eee;">${donation.name}</td></tr>
-        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #eee;">Email</td>        <td style="padding:7px 12px;border-bottom:1px solid #eee;">${donation.email}</td></tr>
-        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #eee;">Phone</td>        <td style="padding:7px 12px;border-bottom:1px solid #eee;">${donation.phone}</td></tr>
-        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #eee;">Amount</td>       <td style="padding:7px 12px;font-weight:700;color:#C85000;border-bottom:1px solid #eee;">${fmtCurrency(donation.amountRupees)}</td></tr>
-        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #eee;">Receipt No.</td>  <td style="padding:7px 12px;font-weight:700;border-bottom:1px solid #eee;">${fmtReceiptNo(donation.receiptNo)}</td></tr>
-        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #eee;">Txn ID</td>       <td style="padding:7px 12px;font-size:11px;border-bottom:1px solid #eee;">${donation.txnId}</td></tr>
-        <tr><td style="padding:7px 12px;color:#666;">Date</td>                                      <td style="padding:7px 12px;">${new Date(donation.completedAt || Date.now()).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</td></tr>
-      </table>
-      <p style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap;">
-        ${sheetUrl ? `<a href="${sheetUrl}" style="background:#C85000;color:#fff;padding:9px 18px;border-radius:4px;text-decoration:none;font-weight:700;font-size:13px;">Open Donor Sheet</a>` : ""}
-        ${donation.driveReceiptUrl ? `<a href="${donation.driveReceiptUrl}" style="background:#1B2A4A;color:#fff;padding:9px 18px;border-radius:4px;text-decoration:none;font-weight:700;font-size:13px;">View Receipt PDF</a>` : ""}
-      </p>
-    </div>
-  `;
-  email.textContent = `New donation: ${fmtCurrency(donation.amountRupees)} from ${donation.name}. Receipt: ${fmtReceiptNo(donation.receiptNo)}. Sheet: ${sheetUrl}`;
+  const client = getBrevoClient();
+  
+  if (!client) {
+    console.error('[Email] Email service is not configured');
+    return { success: false, error: 'Email service is not configured' };
+  }
 
-  const result = await client.sendTransacEmail(email);
-  console.log(`[EMAIL] Admin → ${adminEmail} | msgId=${result.messageId}`);
-  return result;
+  if (!SENDER_EMAIL) {
+    console.warn('[Email] SENDER_EMAIL is missing. Transactional emails are disabled.');
+    return { success: false, error: 'Email sender is not configured' };
+  }
+
+  try {
+    const response = await client.transactionalEmails.sendTransacEmail({
+      sender: sender(),
+      to: [{ email: adminEmail, name: "DMCT Admin" }],
+      subject: `[NEW DONATION] ${fmtCurrency(donation.amountRupees)} from ${donation.name} | Receipt ${fmtReceiptNo(donation.receiptNo)}`,
+      htmlContent: /* html */ `
+        <div style="font-family:Arial,sans-serif;font-size:13px;max-width:500px;">
+          <h3 style="color:#C85000;margin-bottom:16px;">New Donation Received</h3>
+          <table style="border-collapse:collapse;width:100%;">
+            <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #eee;">Donor</td>        <td style="padding:7px 12px;font-weight:600;border-bottom:1px solid #eee;">${donation.name}</td></tr>
+            <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #eee;">Email</td>        <td style="padding:7px 12px;border-bottom:1px solid #eee;">${donation.email}</td></tr>
+            <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #eee;">Phone</td>        <td style="padding:7px 12px;border-bottom:1px solid #eee;">${donation.phone}</td></tr>
+            <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #eee;">Amount</td>       <td style="padding:7px 12px;font-weight:700;color:#C85000;border-bottom:1px solid #eee;">${fmtCurrency(donation.amountRupees)}</td></tr>
+            <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #eee;">Receipt No.</td>  <td style="padding:7px 12px;font-weight:700;border-bottom:1px solid #eee;">${fmtReceiptNo(donation.receiptNo)}</td></tr>
+            <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #eee;">Txn ID</td>       <td style="padding:7px 12px;font-size:11px;border-bottom:1px solid #eee;">${donation.txnId}</td></tr>
+            <tr><td style="padding:7px 12px;color:#666;">Date</td>                                      <td style="padding:7px 12px;">${new Date(donation.completedAt || Date.now()).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</td></tr>
+          </table>
+          <p style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap;">
+            ${sheetUrl ? `<a href="${sheetUrl}" style="background:#C85000;color:#fff;padding:9px 18px;border-radius:4px;text-decoration:none;font-weight:700;font-size:13px;">Open Donor Sheet</a>` : ""}
+            ${donation.driveReceiptUrl ? `<a href="${donation.driveReceiptUrl}" style="background:#1B2A4A;color:#fff;padding:9px 18px;border-radius:4px;text-decoration:none;font-weight:700;font-size:13px;">View Receipt PDF</a>` : ""}
+          </p>
+        </div>
+      `,
+      textContent: `New donation: ${fmtCurrency(donation.amountRupees)} from ${donation.name}. Receipt: ${fmtReceiptNo(donation.receiptNo)}. Sheet: ${sheetUrl}`,
+    });
+
+    const messageId = response?.data?.messageId || response?.messageId || null;
+    console.log(`[EMAIL] Admin → ${adminEmail} | msgId=${messageId}`);
+    return { success: true, messageId };
+  } catch (error) {
+    const message = getErrorMessage(error);
+    console.error('[Email] Failed to send admin notification email:', message);
+    return { success: false, error: message };
+  }
 };
