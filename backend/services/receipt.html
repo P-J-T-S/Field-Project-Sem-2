@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Donation Receipt – Doctor Mitra Charitable Trust</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      background: #fff;
+      width: 210mm;
+      min-height: 148mm;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 148mm;
+      padding: 6mm 8mm;
+      border: 3px solid #C85000;
+      position: relative;
+      background: #fff;
+    }
+
+    /* Inner decorative border */
+    .page::before {
+      content: '';
+      position: absolute;
+      inset: 5px;
+      border: 1.2px solid #C85000;
+      pointer-events: none;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      text-align: center;
+      border-bottom: 2px solid #C85000;
+      padding-bottom: 5px;
+      margin-bottom: 5px;
+    }
+
+    .org-name {
+      font-size: 20pt;
+      font-weight: 900;
+      color: #C85000;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-family: 'Arial Black', Arial, sans-serif;
+    }
+
+    .trust-reg {
+      font-size: 8pt;
+      color: #222;
+      margin: 2px 0;
+      line-height: 1.5;
+    }
+
+    .tax-line {
+      font-size: 9pt;
+      font-weight: bold;
+      color: #000;
+      text-decoration: underline;
+      margin: 2px 0;
+    }
+
+    .cert-lines {
+      font-size: 7.5pt;
+      color: #111;
+      line-height: 1.6;
+      margin: 2px 0;
+    }
+
+    .contact-line {
+      font-size: 8pt;
+      color: #111;
+      margin-top: 2px;
+      line-height: 1.5;
+    }
+
+    /* ── OFFICE ADDRESS BLOCK ── */
+    .office-block {
+      border: 1.5px solid #888;
+      padding: 4px 8px;
+      margin: 5px 0;
+      text-align: center;
+      font-size: 7.5pt;
+      color: #111;
+      line-height: 1.6;
+    }
+
+    /* ── RECEIPT META ROW ── */
+    .receipt-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 7px 0 5px;
+    }
+
+    .receipt-no-block {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .receipt-no-label {
+      font-size: 11pt;
+      font-weight: bold;
+      color: #C85000;
+    }
+
+    .receipt-no-value {
+      font-size: 15pt;
+      font-weight: 900;
+      color: #000;
+      border-bottom: 1.5px solid #000;
+      min-width: 90px;
+      padding-bottom: 1px;
+    }
+
+    .receipt-badge {
+      background: #C85000;
+      color: #fff;
+      font-size: 11pt;
+      font-weight: bold;
+      padding: 4px 16px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .date-block {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      font-size: 10pt;
+    }
+
+    .date-line {
+      border-bottom: 1.5px solid #000;
+      min-width: 110px;
+      padding-bottom: 1px;
+      font-size: 10pt;
+      font-weight: 600;
+    }
+
+    /* ── FORM FIELDS ── */
+    .field-row {
+      margin: 7px 0;
+      display: flex;
+      align-items: flex-end;
+      gap: 5px;
+      font-size: 10pt;
+    }
+
+    .field-label {
+      white-space: nowrap;
+      font-size: 10pt;
+      color: #111;
+    }
+
+    .field-line {
+      flex: 1;
+      border-bottom: 1.5px solid #444;
+      min-height: 17px;
+      padding-bottom: 1px;
+      font-size: 10pt;
+      color: #000;
+      font-weight: 600;
+      padding-left: 3px;
+    }
+
+    .inline-group {
+      display: flex;
+      gap: 14px;
+      margin: 7px 0;
+      align-items: flex-end;
+    }
+
+    .inline-group .part {
+      display: flex;
+      align-items: flex-end;
+      gap: 5px;
+      flex: 1;
+    }
+
+    .inline-group .part .field-line { flex: 1; }
+
+    .towards-row {
+      font-size: 10pt;
+      margin: 8px 0 3px;
+      color: #111;
+    }
+
+    /* ── TXN small print ── */
+    .txn-small {
+      font-size: 6.5pt;
+      color: #666;
+      margin: 3px 0;
+    }
+
+    /* ── FOOTER: Rs box + stamp ── */
+    .footer-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+
+    .rs-box {
+      border: 2.5px solid #C85000;
+      border-radius: 22px;
+      padding: 6px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 190px;
+    }
+
+    .rs-label {
+      font-size: 13pt;
+      font-weight: bold;
+      color: #C85000;
+    }
+
+    .rs-value {
+      font-size: 13pt;
+      font-weight: 900;
+      color: #000;
+      min-width: 90px;
+    }
+
+    /* Circular stamp */
+    .stamp {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      border: 2.5px solid #C85000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 8px;
+    }
+
+    .stamp-inner {
+      border: 1.5px solid #C85000;
+      border-radius: 50%;
+      width: 74px;
+      height: 74px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      text-align: center;
+    }
+
+    .stamp-text {
+      font-size: 6pt;
+      font-weight: bold;
+      color: #C85000;
+      text-transform: uppercase;
+      line-height: 1.4;
+    }
+
+    .stamp-regd {
+      font-size: 5.5pt;
+      color: #C85000;
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+
+    .stamp-star {
+      font-size: 8pt;
+      color: #C85000;
+      margin: 1px 0;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="org-name">Doctor Mitra Charitable Trust</div>
+    <div class="trust-reg">
+      Trust Registered under the Bombay Public Trust Act. 1950 (Bombay XXIX of 1950) Regd. No. E-4020 / 2005
+    </div>
+    <div class="tax-line">For INCOME TAX EXEMPTION</div>
+    <div class="cert-lines">
+      80 G – CERTIFICATE NO.: AAA TD8729MF20216 &nbsp;|&nbsp; 12AA-CERTIFICATE NO.: AAATD8729MF20218<br/>
+      TRUST BANK ACCOUNT DETAIL : BANK OF BARODA &nbsp;|&nbsp; A/C NO.: 27690200000209<br/>
+      IFSC CODE : BARB0TISGAO (5th Digit ZERO) &nbsp;|&nbsp; BRANCH : TISGAON, KALYAN (E.) &nbsp;|&nbsp; PAN CARD NO.: AAATD8729M
+    </div>
+    <div class="contact-line">
+      PHONE PAY / G. PAY : 7977211807 &nbsp;·&nbsp; EMAIL : drravindrajadhav2@gmail.com &nbsp;·&nbsp; YOUTUBE : www.youtube.com/drmitrachannel
+    </div>
+  </div>
+
+  <!-- OFFICE ADDRESS -->
+  <div class="office-block">
+    OFFICE: DMCT HOSPITAL, New Rachna Park, Near St. Mary English School, Poona Link Road, Chakki Naka, Kalyan (E.) – 421306. Taluka : Kalyan, Dist. : Thane, Maharashtra, India.<br/>
+    • WEBSITE : www.drmitraoldagehospital.in &nbsp;·&nbsp; FACEBOOK: RAVINDRA JADHAV &nbsp;·&nbsp; <strong>Mob.: 9833155731 / 7977211807</strong>
+  </div>
+
+  <!-- RECEIPT META ROW -->
+  <div class="receipt-row">
+    <div class="receipt-no-block">
+      <span class="receipt-no-label">Receipt No.</span>
+      <span class="receipt-no-value">{{RECEIPT_NUMBER}}</span>
+    </div>
+    <div class="receipt-badge">Donation Receipt</div>
+    <div class="date-block">
+      <span>Date :</span>
+      <span class="date-line">{{RECEIPT_DATE}}</span>
+    </div>
+  </div>
+
+  <!-- DONOR NAME -->
+  <div class="field-row">
+    <span class="field-label">Received with thanks from</span>
+    <span class="field-line">{{DONOR_NAME}}</span>
+  </div>
+
+  <!-- AMOUNT IN WORDS -->
+  <div class="field-row">
+    <span class="field-label">the sum of Rupees (In words)</span>
+    <span class="field-line">{{AMOUNT_IN_WORDS}} Rupees Only</span>
+  </div>
+
+  <!-- PAYMENT METHOD -->
+  <div class="inline-group">
+    <div class="part">
+      <span class="field-label">By Cash / G.Pay</span>
+      <span class="field-line">PhonePe (Online)</span>
+    </div>
+    <div class="part">
+      <span class="field-label">Cheque No.:</span>
+      <span class="field-line" style="font-weight:400;">—</span>
+    </div>
+    <div class="part">
+      <span class="field-label">dated</span>
+      <span class="field-line">{{PAYMENT_DATE}}</span>
+    </div>
+  </div>
+
+  <!-- BANK ROW -->
+  <div class="inline-group">
+    <div class="part" style="flex:2;">
+      <span class="field-label">Bank</span>
+      <span class="field-line" style="font-weight:400;">—</span>
+    </div>
+    <div class="part" style="flex:2;">
+      <span class="field-label">Branch</span>
+      <span class="field-line" style="font-weight:400;">—</span>
+    </div>
+  </div>
+
+  <!-- TOWARDS -->
+  <div class="towards-row">Towards the Donation.</div>
+
+  <!-- TXN DETAILS (small) -->
+  <div class="txn-small">
+    Txn ID: {{TXN_ID}} &nbsp;|&nbsp; PhonePe Ref: {{PHONEPE_TXN_ID}} &nbsp;|&nbsp; Email: {{DONOR_EMAIL}} &nbsp;|&nbsp; Phone: {{DONOR_PHONE}}
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-row">
+    <div class="rs-box">
+      <span class="rs-label">Rs.</span>
+      <span class="rs-value">{{AMOUNT}}</span>
+    </div>
+
+    <div class="stamp">
+      <div class="stamp-inner">
+        <div class="stamp-star">✦</div>
+        <div class="stamp-text">Doctor Mitra<br/>Charitable Trust</div>
+        <div class="stamp-star">✦</div>
+        <div class="stamp-regd">REGD. NO.<br/>E-4020<br/>THANE</div>
+        <div class="stamp-star">✦</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
