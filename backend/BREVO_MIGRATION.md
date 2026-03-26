@@ -91,10 +91,10 @@ The new implementation includes:
 
 ## 📝 Migration Notes
 
-- **No Breaking Changes** - The public API (`sendDonorConfirmationEmail`, `sendAdminNotificationEmail`) remains the same
+- **Behavior Change** - The public API functions (`sendDonorConfirmationEmail`, `sendAdminNotificationEmail`) now return `{ success, messageId/error }` instead of throwing on failure. Callers should check the `success` flag rather than relying on exceptions.
 - **Removed nodemailer** - No longer needed since we're using Brevo API directly
 - **Environment Variables** - Remove old SMTP variables, use `BREVO_API_KEY` instead
-- **Backwards Compatible** - Supports both `EMAIL_FROM_ADDRESS` and `BREVO_SENDER_EMAIL` for flexibility
+- **Backwards Compatible Env Vars** - Supports both `EMAIL_FROM_ADDRESS` and `BREVO_SENDER_EMAIL` for flexibility in configuration
 
 ## ⚠️ Important
 

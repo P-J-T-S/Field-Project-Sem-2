@@ -1,19 +1,16 @@
 import { BrevoClient } from '@getbrevo/brevo';
 
-const API_KEY = process.env.BREVO_API_KEY || '';
-const SENDER_EMAIL = process.env.EMAIL_FROM_ADDRESS || process.env.BREVO_SENDER_EMAIL || '';
-const SENDER_NAME = process.env.EMAIL_FROM_NAME || 'DMCT Hospital & Old Age Home';
-
 let brevoClient = null;
 
 const getBrevoClient = () => {
-  if (!API_KEY) {
+  const apiKey = process.env.BREVO_API_KEY || '';
+  if (!apiKey) {
     console.warn('[Email] BREVO_API_KEY is missing. Transactional emails are disabled.');
     return null;
   }
 
   if (!brevoClient) {
-    brevoClient = new BrevoClient({ apiKey: API_KEY });
+    brevoClient = new BrevoClient({ apiKey });
     console.log('[Email] Brevo transactional email client configured.');
   }
 
@@ -37,9 +34,12 @@ const getErrorMessage = (error) => {
 const fmtCurrency = (n) =>
   "₹" + Number(n).toLocaleString("en-IN", { minimumFractionDigits: 0 });
 
+const getSenderEmail = () =>
+  process.env.EMAIL_FROM_ADDRESS || process.env.BREVO_SENDER_EMAIL || '';
+
 const sender = () => ({
-  name: SENDER_NAME,
-  email: SENDER_EMAIL || "your-verified@gmail.com",
+  name: process.env.EMAIL_FROM_NAME || 'DMCT Hospital & Old Age Home',
+  email: getSenderEmail(),
 });
 
 const fmtReceiptNo = (n) => (n ? `RCP-${String(n).padStart(4, "0")}` : "—");
@@ -143,7 +143,8 @@ export const sendDonorConfirmationEmail = async (donation, pdfBuffer) => {
     return { success: false, error: 'Email service is not configured' };
   }
 
-  if (!SENDER_EMAIL) {
+  const senderEmail = getSenderEmail();
+  if (!senderEmail) {
     console.warn('[Email] SENDER_EMAIL is missing. Transactional emails are disabled.');
     return { success: false, error: 'Email sender is not configured' };
   }
@@ -195,7 +196,8 @@ export const sendAdminNotificationEmail = async (donation, sheetUrl) => {
     return { success: false, error: 'Email service is not configured' };
   }
 
-  if (!SENDER_EMAIL) {
+  const senderEmail = getSenderEmail();
+  if (!senderEmail) {
     console.warn('[Email] SENDER_EMAIL is missing. Transactional emails are disabled.');
     return { success: false, error: 'Email sender is not configured' };
   }

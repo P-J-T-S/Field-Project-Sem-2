@@ -232,8 +232,12 @@ router.post("/callback", async (req, res) => {
     // Step 4 — Email donor
     if (pdfBuffer) {
       try {
-        await sendDonorConfirmationEmail(donation, pdfBuffer);
-        console.log(`[CALLBACK] Email → ${donation.email}`);
+        const result = await sendDonorConfirmationEmail(donation, pdfBuffer);
+        if (result?.success) {
+          console.log(`[CALLBACK] Email → ${donation.email}`);
+        } else {
+          console.error("[CALLBACK] Donor email failed:", result?.error);
+        }
       } catch (e) {
         console.error("[CALLBACK] Donor email failed:", e.message);
       }
@@ -241,7 +245,10 @@ router.post("/callback", async (req, res) => {
 
     // Step 5 — Notify admin
     try {
-      await sendAdminNotificationEmail(donation, sheetUrl);
+      const result = await sendAdminNotificationEmail(donation, sheetUrl);
+      if (result?.success === false) {
+        console.error("[CALLBACK] Admin email failed:", result.error);
+      }
     } catch (e) {
       console.error("[CALLBACK] Admin email failed:", e.message);
     }
